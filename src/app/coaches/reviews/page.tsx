@@ -19,6 +19,81 @@ interface CoachReviewData {
   reviewTime: string
 }
 
+interface VerificationData {
+  key: string;
+  coachId: string;
+  coachName: string;
+  idNumber: string;
+  idFrontPhoto: string;
+  idBackPhoto: string;
+  status: string;
+  rejectReason: string;
+  submitTime: string;
+  reviewTime: string;
+}
+
+interface CertificateData {
+  key: string;
+  coachId: string;
+  coachName: string;
+  certificateType: string;
+  certificatePhoto: string;
+  status: string;
+  rejectReason: string;
+  submitTime: string;
+  reviewTime: string;
+}
+
+interface WorkExperienceData {
+  key: string;
+  coachId: string;
+  coachName: string;
+  company: string;
+  position: string;
+  duration: string;
+  proofPhoto: string;
+  status: string;
+  rejectReason: string;
+  submitTime: string;
+  reviewTime: string;
+}
+
+interface ProfileData {
+  key: string;
+  coachId: string;
+  coachName: string;
+  introduction: string;
+  specialties: string[];
+  status: string;
+  rejectReason: string;
+  submitTime: string;
+  reviewTime: string;
+}
+
+interface HealthData {
+  key: string;
+  coachId: string;
+  coachName: string;
+  healthCertPhoto: string;
+  expiryDate: string;
+  status: string;
+  rejectReason: string;
+  submitTime: string;
+  reviewTime: string;
+}
+
+interface BusinessData {
+  key: string;
+  coachId: string;
+  coachName: string;
+  licensePhoto: string;
+  licenseNumber: string;
+  status: string;
+  rejectReason: string;
+  submitTime: string;
+  reviewTime: string;
+}
+
 export default function CoachReviewsPage() {
   const [searchText, setSearchText] = useState('')
   const [activeTab, setActiveTab] = useState('info')
@@ -153,7 +228,72 @@ export default function CoachReviewsPage() {
     { label: '营业执照', key: 'business'},
   ]
 
-  const handleTabChange = (tab) => {
+  const verificationColumns: ColumnsType<VerificationData> = [
+    {
+      title: '教练ID',
+      dataIndex: 'coachId',
+      width: 80,
+    },
+    {
+      title: '教练姓名',
+      dataIndex: 'coachName',
+      width: 120,
+    },
+    {
+      title: '身份证号',
+      dataIndex: 'idNumber',
+      width: 180,
+    },
+    {
+      title: '身份证正面',
+      dataIndex: 'idFrontPhoto',
+      width: 100,
+      render: (photo) => (
+        <img src={photo} alt="身份证正面" className="w-10 h-10 object-cover rounded" />
+      ),
+    },
+    {
+      title: '身份证反面',
+      dataIndex: 'idBackPhoto',
+      width: 100,
+      render: (photo) => (
+        <img src={photo} alt="身份证反面" className="w-10 h-10 object-cover rounded" />
+      ),
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      width: 100,
+      render: (status) => (
+        <Tag color={status === '通过' ? 'success' : status === '未审核' ? 'warning' : 'error'}>
+          {status}
+        </Tag>
+      ),
+    },
+    {
+      title: '操作',
+      key: 'action',
+      width: 100,
+      render: () => <Button type="link">审核</Button>,
+    },
+  ];
+
+  const verificationMockData: VerificationData[] = [
+    {
+      key: '1',
+      coachId: '1',
+      coachName: '洪流',
+      idNumber: '330************1234',
+      idFrontPhoto: '/id-front.jpg',
+      idBackPhoto: '/id-back.jpg',
+      status: '未��核',
+      rejectReason: '',
+      submitTime: '2024-10-16 16:48:23',
+      reviewTime: '-',
+    },
+  ];
+
+  const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
 
@@ -187,40 +327,308 @@ export default function CoachReviewsPage() {
         />
       )}
       {activeTab === 'verification' && (
-        <div>
-          {/* Table content for 实名认证 */}
-          <p>Table for 实名认证</p>
-        </div>
+        <Table
+          columns={verificationColumns}
+          dataSource={verificationMockData}
+          scroll={{ x: 1500 }}
+          pagination={{
+            total: 1,
+            current: 1,
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
+        />
       )}
       {activeTab === 'certificate' && (
-        <div>
-          {/* Table content for 职业证书 */}
-          <p>Table for 职业证书</p>
-        </div>
+        <Table
+          columns={[
+            {
+              title: '教练ID',
+              dataIndex: 'coachId',
+              width: 80,
+            },
+            {
+              title: '教练姓名',
+              dataIndex: 'coachName',
+              width: 120,
+            },
+            {
+              title: '证书类型',
+              dataIndex: 'certificateType',
+              width: 120,
+            },
+            {
+              title: '证书照片',
+              dataIndex: 'certificatePhoto',
+              width: 100,
+              render: (photo) => (
+                <img src={photo} alt="证书照片" className="w-10 h-10 object-cover rounded" />
+              ),
+            },
+            {
+              title: '状态',
+              dataIndex: 'status',
+              width: 100,
+              render: (status) => (
+                <Tag color={status === '通过' ? 'success' : status === '未审核' ? 'warning' : 'error'}>
+                  {status}
+                </Tag>
+              ),
+            },
+            {
+              title: '操作',
+              key: 'action',
+              width: 100,
+              render: () => <Button type="link">审核</Button>,
+            },
+          ]}
+          dataSource={[]}
+          scroll={{ x: 1200 }}
+          pagination={{
+            total: 0,
+            current: 1,
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
+        />
       )}
       {activeTab === 'work' && (
-        <div>
-          {/* Table content for 工作经历 */}
-          <p>Table for 工作经历</p>
-        </div>
+        <Table
+          columns={[
+            {
+              title: '教练ID',
+              dataIndex: 'coachId',
+              width: 80,
+            },
+            {
+              title: '教练姓名',
+              dataIndex: 'coachName',
+              width: 120,
+            },
+            {
+              title: '公司名称',
+              dataIndex: 'company',
+              width: 200,
+            },
+            {
+              title: '职位',
+              dataIndex: 'position',
+              width: 150,
+            },
+            {
+              title: '工作时间',
+              dataIndex: 'duration',
+              width: 200,
+            },
+            {
+              title: '证明材料',
+              dataIndex: 'proofPhoto',
+              width: 100,
+              render: (photo) => (
+                <img src={photo} alt="证明材料" className="w-10 h-10 object-cover rounded" />
+              ),
+            },
+            {
+              title: '状态',
+              dataIndex: 'status',
+              width: 100,
+              render: (status) => (
+                <Tag color={status === '通过' ? 'success' : status === '未审核' ? 'warning' : 'error'}>
+                  {status}
+                </Tag>
+              ),
+            },
+            {
+              title: '操作',
+              key: 'action',
+              width: 100,
+              render: () => <Button type="link">审核</Button>,
+            },
+          ]}
+          dataSource={[]}
+          scroll={{ x: 1500 }}
+          pagination={{
+            total: 0,
+            current: 1,
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
+        />
       )}
       {activeTab === 'profile' && (
-        <div>
-          {/* Table content for 个人简介 */}
-          <p>Table for 个人简介</p>
-        </div>
+        <Table
+          columns={[
+            {
+              title: '教练ID',
+              dataIndex: 'coachId',
+              width: 80,
+            },
+            {
+              title: '教练姓名',
+              dataIndex: 'coachName',
+              width: 120,
+            },
+            {
+              title: '个人简介',
+              dataIndex: 'introduction',
+              width: 300,
+            },
+            {
+              title: '专长领域',
+              dataIndex: 'specialties',
+              width: 200,
+              render: (specialties: string[]) => (
+                <Space wrap>
+                  {specialties.map((specialty, index) => (
+                    <Tag key={index} color="blue">{specialty}</Tag>
+                  ))}
+                </Space>
+              ),
+            },
+            {
+              title: '状态',
+              dataIndex: 'status',
+              width: 100,
+              render: (status) => (
+                <Tag color={status === '通过' ? 'success' : status === '未审核' ? 'warning' : 'error'}>
+                  {status}
+                </Tag>
+              ),
+            },
+            {
+              title: '操作',
+              key: 'action',
+              width: 100,
+              render: () => <Button type="link">审核</Button>,
+            },
+          ]}
+          dataSource={[]}
+          scroll={{ x: 1300 }}
+          pagination={{
+            total: 0,
+            current: 1,
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
+        />
       )}
       {activeTab === 'health' && (
-        <div>
-          {/* Table content for 健康证明 */}
-          <p>Table for 健康证明</p>
-        </div>
+        <Table
+          columns={[
+            {
+              title: '教练ID',
+              dataIndex: 'coachId',
+              width: 80,
+            },
+            {
+              title: '教练姓名',
+              dataIndex: 'coachName',
+              width: 120,
+            },
+            {
+              title: '健康证明',
+              dataIndex: 'healthCertPhoto',
+              width: 100,
+              render: (photo) => (
+                <img src={photo} alt="健康证明" className="w-10 h-10 object-cover rounded" />
+              ),
+            },
+            {
+              title: '有效期至',
+              dataIndex: 'expiryDate',
+              width: 160,
+            },
+            {
+              title: '状态',
+              dataIndex: 'status',
+              width: 100,
+              render: (status) => (
+                <Tag color={status === '通过' ? 'success' : status === '未审核' ? 'warning' : 'error'}>
+                  {status}
+                </Tag>
+              ),
+            },
+            {
+              title: '操作',
+              key: 'action',
+              width: 100,
+              render: () => <Button type="link">审核</Button>,
+            },
+          ]}
+          dataSource={[]}
+          scroll={{ x: 1200 }}
+          pagination={{
+            total: 0,
+            current: 1,
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
+        />
       )}
       {activeTab === 'business' && (
-        <div>
-          {/* Table content for 营业执照 */}
-          <p>Table for 营业执照</p>
-        </div>
+        <Table
+          columns={[
+            {
+              title: '教练ID',
+              dataIndex: 'coachId',
+              width: 80,
+            },
+            {
+              title: '教练姓名',
+              dataIndex: 'coachName',
+              width: 120,
+            },
+            {
+              title: '营业执照照片',
+              dataIndex: 'licensePhoto',
+              width: 100,
+              render: (photo) => (
+                <img src={photo} alt="营业执照" className="w-10 h-10 object-cover rounded" />
+              ),
+            },
+            {
+              title: '执照编号',
+              dataIndex: 'licenseNumber',
+              width: 200,
+            },
+            {
+              title: '状态',
+              dataIndex: 'status',
+              width: 100,
+              render: (status) => (
+                <Tag color={status === '通过' ? 'success' : status === '未审核' ? 'warning' : 'error'}>
+                  {status}
+                </Tag>
+              ),
+            },
+            {
+              title: '操作',
+              key: 'action',
+              width: 100,
+              render: () => <Button type="link">审核</Button>,
+            },
+          ]}
+          dataSource={[]}
+          scroll={{ x: 1200 }}
+          pagination={{
+            total: 0,
+            current: 1,
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
+        />
       )}
     </div>
   )

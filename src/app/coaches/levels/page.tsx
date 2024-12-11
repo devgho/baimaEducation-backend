@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
-import { Table, Input, Button, Space, Tag } from 'antd'
+import React, { useState } from 'react'
+import { Table, Input, Button, Tabs, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 
+// 等级列表数据接口
 interface CoachLevelData {
   key: string
   id: number
@@ -19,10 +20,24 @@ interface CoachLevelData {
   reviewStatus: string
 }
 
-export default function CoachLevelsPage() {
-  const [searchText, setSearchText] = useState('')
+// 升级日志数据接口
+interface UpgradeLogData {
+  key: string
+  id: number
+  coachName: string
+  phone: string
+  oldLevel: string
+  newLevel: string
+  upgradeTime: string
+  upgradeReason: string
+}
 
-  const columns: ColumnsType<CoachLevelData> = [
+export default function LevelsPage() {
+  const [searchText, setSearchText] = useState('')
+  const [activeTab, setActiveTab] = useState('list')
+
+  // 等级列表列定义
+  const levelColumns: ColumnsType<CoachLevelData> = [
     {
       title: '教练头像',
       dataIndex: 'avatar',
@@ -101,7 +116,47 @@ export default function CoachLevelsPage() {
     },
   ]
 
-  const mockData: CoachLevelData[] = [
+  // 升级日志列定义
+  const logColumns: ColumnsType<UpgradeLogData> = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      width: 80,
+    },
+    {
+      title: '教练姓名',
+      dataIndex: 'coachName',
+      width: 120,
+    },
+    {
+      title: '手机号',
+      dataIndex: 'phone',
+      width: 120,
+    },
+    {
+      title: '原等级',
+      dataIndex: 'oldLevel',
+      width: 100,
+    },
+    {
+      title: '新等级',
+      dataIndex: 'newLevel',
+      width: 100,
+    },
+    {
+      title: '升级时间',
+      dataIndex: 'upgradeTime',
+      width: 180,
+    },
+    {
+      title: '升级原因',
+      dataIndex: 'upgradeReason',
+      width: 200,
+    },
+  ]
+
+  // 等级列表模拟数据
+  const levelMockData: CoachLevelData[] = [
     {
       key: '1',
       id: 1,
@@ -132,38 +187,100 @@ export default function CoachLevelsPage() {
     },
   ]
 
-  return (
-    <div className="bg-white p-6 rounded-lg">
-      <div className="mb-4 flex items-center space-x-4">
-        <Input.Search
-          placeholder="教练ID"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          style={{ width: 200 }}
-        />
-        <Input.Search
-          placeholder="教练姓名"
-          style={{ width: 200 }}
-        />
-        <Input.Search
-          placeholder="教练电话"
-          style={{ width: 200 }}
-        />
-        <Button type="primary">查询</Button>
-      </div>
+  // 升级日志模拟数据
+  const logMockData: UpgradeLogData[] = [
+    {
+      key: '1',
+      id: 1,
+      coachName: '张三',
+      phone: '13800138000',
+      oldLevel: '普通教练',
+      newLevel: '金牌教练',
+      upgradeTime: '2024-10-21 21:27:10',
+      upgradeReason: '达到升级条件自动升级',
+    }
+  ]
 
-      <Table
-        columns={columns}
-        dataSource={mockData}
-        scroll={{ x: 1500 }}
-        pagination={{
-          total: 11,
-          current: 1,
-          pageSize: 10,
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: (total) => `共 ${total} 条`,
-        }}
+  const items = [
+    {
+      key: 'list',
+      label: '等级列表',
+      children: (
+        <div>
+          <div className="mb-4 flex items-center space-x-4">
+            <Input.Search
+              placeholder="教练ID"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              style={{ width: 200 }}
+            />
+            <Input.Search
+              placeholder="教练姓名"
+              style={{ width: 200 }}
+            />
+            <Input.Search
+              placeholder="教练电话"
+              style={{ width: 200 }}
+            />
+            <Button type="primary">查询</Button>
+          </div>
+
+          <Table
+            columns={levelColumns}
+            dataSource={levelMockData}
+            scroll={{ x: 1500 }}
+            pagination={{
+              total: 11,
+              current: 1,
+              pageSize: 10,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total) => `共 ${total} 条`,
+            }}
+          />
+        </div>
+      ),
+    },
+    {
+      key: 'logs',
+      label: '升级日志',
+      children: (
+        <div>
+          <div className="mb-4 flex items-center space-x-4">
+            <Input
+              placeholder="教练姓名/手机号"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              style={{ width: 200 }}
+            />
+            <Button type="primary">查询</Button>
+          </div>
+
+          <Table
+            columns={logColumns}
+            dataSource={logMockData}
+            scroll={{ x: 1000 }}
+            pagination={{
+              total: 1,
+              current: 1,
+              pageSize: 10,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total) => `共 ${total} 条`,
+            }}
+          />
+        </div>
+      ),
+    },
+  ]
+
+  return (
+    <div className="bg-white">
+      <Tabs
+        activeKey={activeTab}
+        items={items}
+        onChange={(key) => setActiveTab(key)}
+        className="px-6"
       />
     </div>
   )
