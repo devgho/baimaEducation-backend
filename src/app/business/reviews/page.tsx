@@ -1,6 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { Form, Input, Button, Table, Tag, Space } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
+import type { ColumnsType } from 'antd/es/table'
+import DateRangeSearch from '@/components/common/DateRangeSearch'
 
 interface Withdrawal {
   id: number
@@ -20,8 +24,9 @@ interface Withdrawal {
   applicationTime: string
 }
 
-export default function WithdrawalReview() {
-  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([
+export default function BusinessReviewsPage() {
+  const [searchForm] = Form.useForm()
+  const [withdrawals] = useState<Withdrawal[]>([
     {
       id: 1,
       transactionId: 'TX123456',
@@ -39,110 +44,162 @@ export default function WithdrawalReview() {
       status: '待审核',
       applicationTime: '2024-11-20 14:31:21',
     }
-  ]);
+  ])
+
+  const columns: ColumnsType<Withdrawal> = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      width: 80,
+    },
+    {
+      title: '商家',
+      dataIndex: 'storeName',
+      width: 200,
+      render: (_, record) => (
+        <div className="flex items-center space-x-2">
+          <img 
+            src={record.storeImage} 
+            alt={record.storeName}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+          <span>{record.storeName}</span>
+        </div>
+      ),
+    },
+    {
+      title: '提现金额',
+      dataIndex: 'amount',
+      width: 120,
+      render: (amount) => `¥${amount.toFixed(2)}`,
+    },
+    {
+      title: '手续费',
+      dataIndex: 'fee',
+      width: 100,
+      render: (fee) => `¥${fee.toFixed(2)}`,
+    },
+    {
+      title: '实际到账',
+      dataIndex: 'netAmount',
+      width: 120,
+      render: (netAmount) => `¥${netAmount.toFixed(2)}`,
+    },
+    {
+      title: '提现方式',
+      dataIndex: 'method',
+      width: 100,
+    },
+    {
+      title: '收款账户',
+      dataIndex: 'accountNumber',
+      width: 200,
+      render: (_, record) => (
+        <div>
+          <div>{record.accountName}</div>
+          <div className="text-gray-500 text-sm">{record.accountNumber}</div>
+          <div className="text-gray-500 text-sm">{record.bankName} {record.branchName}</div>
+        </div>
+      ),
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      width: 100,
+      render: (status) => (
+        <Tag color={
+          status === '已通过' ? 'success' :
+          status === '待审核' ? 'warning' :
+          'error'
+        }>
+          {status}
+        </Tag>
+      ),
+    },
+    {
+      title: '申请时间',
+      dataIndex: 'applicationTime',
+      width: 180,
+    },
+    {
+      title: '操作',
+      key: 'action',
+      width: 180,
+      render: (_, record) => (
+        <Space>
+          {record.status === '待审核' && (
+            <>
+              <Button type="link" onClick={() => handleApprove(record.id)}>
+                通过
+              </Button>
+              <Button type="link" danger onClick={() => handleReject(record.id)}>
+                拒绝
+              </Button>
+            </>
+          )}
+          <Button type="link">详情</Button>
+        </Space>
+      ),
+    },
+  ]
+
+  const handleApprove = (id: number) => {
+    // 处理通过逻辑
+  }
+
+  const handleReject = (id: number) => {
+    // 处理拒绝逻辑
+  }
 
   return (
-    <div className="bg-white rounded-lg p-6">
-      {/* 搜索栏 */}
-      <div className="flex items-center gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="提现交易号"
-          className="px-3 py-2 border rounded-md w-64"
-        />
-        <input
-          type="text"
-          placeholder="门店ID/名称/手机号"
-          className="px-3 py-2 border rounded-md w-64"
-        />
-        <select className="px-3 py-2 border rounded-md w-32">
-          <option value="">全部状态</option>
-          <option value="pending">待审核</option>
-          <option value="approved">已通过</option>
-          <option value="rejected">已拒绝</option>
-        </select>
-        <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-          查询
-        </button>
-      </div>
+    <div className="bg-white">
+      <Form
+        form={searchForm}
+        layout="inline"
+        className="p-4"
+      >
+        <Form.Item name="storeId">
+          <Input
+            placeholder="商家ID"
+            prefix={<SearchOutlined />}
+            style={{ width: 200 }}
+          />
+        </Form.Item>
 
-      {/* 表格 */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">ID</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">交易号</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">门店头像</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">门店名称</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">提现金额</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">手续费</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">到账金额</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">提现方式</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">真实姓名</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">提现账号</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">开户银行</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">开户支行</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">驳回原因</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">审核状态</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">申请时间</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">操作</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {withdrawals.map((withdrawal) => (
-              <tr key={withdrawal.id}>
-                <td className="px-4 py-4 text-sm text-gray-900">{withdrawal.id}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{withdrawal.transactionId}</td>
-                <td className="px-4 py-4">
-                  <img
-                    src={withdrawal.storeImage}
-                    alt={withdrawal.storeName}
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
-                </td>
-                <td className="px-4 py-4 text-sm text-gray-900">{withdrawal.storeName}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">¥{withdrawal.amount.toFixed(2)}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">¥{withdrawal.fee.toFixed(2)}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">¥{withdrawal.netAmount.toFixed(2)}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{withdrawal.method}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{withdrawal.accountName}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{withdrawal.accountNumber}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{withdrawal.bankName}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{withdrawal.branchName}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{withdrawal.reason}</td>
-                <td className="px-4 py-4 text-sm">
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    withdrawal.status === '待审核' ? 'bg-yellow-100 text-yellow-800' :
-                    withdrawal.status === '已通过' ? 'bg-green-100 text-green-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    {withdrawal.status}
-                  </span>
-                </td>
-                <td className="px-4 py-4 text-sm text-gray-900">{withdrawal.applicationTime}</td>
-                <td className="px-4 py-4 text-sm text-blue-600">
-                  <button className="hover:text-blue-800">审核</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        <Form.Item name="storeName">
+          <Input
+            placeholder="商家名称"
+            style={{ width: 200 }}
+          />
+        </Form.Item>
 
-      {/* 分页 */}
-      <div className="flex justify-between items-center mt-4">
-        <div className="text-sm text-gray-500">
-          共 {withdrawals.length} 条
-        </div>
-        <div className="flex items-center space-x-2">
-          <button className="px-3 py-1 border rounded hover:bg-gray-50">上一页</button>
-          <button className="px-3 py-1 bg-blue-500 text-white rounded">1</button>
-          <button className="px-3 py-1 border rounded hover:bg-gray-50">下一页</button>
-        </div>
-      </div>
+        <DateRangeSearch 
+          form={searchForm} 
+          label="申请时间"
+          showTime
+          format="YYYY-MM-DD HH:mm:ss"
+        />
+
+        <Form.Item>
+          <Space>
+            <Button type="primary" icon={<SearchOutlined />}>查询</Button>
+            <Button onClick={() => searchForm.resetFields()}>重置</Button>
+          </Space>
+        </Form.Item>
+      </Form>
+
+      <Table 
+        columns={columns} 
+        dataSource={withdrawals}
+        rowKey="id"
+        pagination={{
+          total: withdrawals.length,
+          showQuickJumper: true,
+          showSizeChanger: true,
+          showTotal: (total) => `共 ${total} 条`,
+        }}
+        scroll={{ x: 1500 }}
+      />
     </div>
   )
 } 

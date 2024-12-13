@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Table, Input, Button, Space, Tabs, Tag } from 'antd'
+import { Table, Input, Button, Space, Tabs, Tag, Form } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
+import { SearchOutlined } from '@ant-design/icons'
+import DateRangeSearch from '@/components/common/DateRangeSearch'
 
 interface CoachReviewData {
   key: string
@@ -95,7 +97,7 @@ interface BusinessData {
 }
 
 export default function CoachReviewsPage() {
-  const [searchText, setSearchText] = useState('')
+  const [searchForm] = Form.useForm()
   const [activeTab, setActiveTab] = useState('info')
 
   const columns: ColumnsType<CoachReviewData> = [
@@ -286,7 +288,7 @@ export default function CoachReviewsPage() {
       idNumber: '330************1234',
       idFrontPhoto: '/id-front.jpg',
       idBackPhoto: '/id-back.jpg',
-      status: '未��核',
+      status: '未审核',
       rejectReason: '',
       submitTime: '2024-10-16 16:48:23',
       reviewTime: '-',
@@ -301,15 +303,33 @@ export default function CoachReviewsPage() {
     <div className="bg-white p-6 rounded-lg">
       <Tabs items={items} activeKey={activeTab} onChange={handleTabChange} />
       
-      <div className="mb-4 flex items-center space-x-4">
-        <Input.Search
-          placeholder="教练ID"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          style={{ width: 200 }}
+      <Form
+        form={searchForm}
+        layout="inline"
+        className="p-4"
+      >
+        <Form.Item name="coachId">
+          <Input
+            placeholder="教练ID"
+            prefix={<SearchOutlined />}
+            style={{ width: 200 }}
+          />
+        </Form.Item>
+        
+        <DateRangeSearch 
+          form={searchForm} 
+          label="申请时间"
+          showTime
+          format="YYYY-MM-DD HH:mm:ss"
         />
-        <Button type="primary">查询</Button>
-      </div>
+
+        <Form.Item>
+          <Space>
+            <Button type="primary" icon={<SearchOutlined />}>查询</Button>
+            <Button onClick={() => searchForm.resetFields()}>重置</Button>
+          </Space>
+        </Form.Item>
+      </Form>
 
       {activeTab === 'info' && (
         <Table
@@ -589,7 +609,7 @@ export default function CoachReviewsPage() {
               width: 120,
             },
             {
-              title: '营业执照照片',
+              title: '营业��照照片',
               dataIndex: 'licensePhoto',
               width: 100,
               render: (photo) => (

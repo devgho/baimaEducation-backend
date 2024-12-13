@@ -1,6 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { Button, Table, Tag, Form, Input, Select, Space } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
+import DateRangeSearch from '@/components/common/DateRangeSearch'
 
 interface Order {
   id: string
@@ -16,6 +19,7 @@ interface Order {
 }
 
 export default function OrdersPage() {
+  const [searchForm] = Form.useForm()
   // 搜索栏状态
   const [orderId, setOrderId] = useState('')
   const [schoolId, setSchoolId] = useState('')
@@ -86,83 +90,63 @@ export default function OrdersPage() {
       </div>
 
       {/* 搜索栏 */}
-      <div className="bg-white p-4 rounded-lg shadow flex flex-wrap items-center gap-4">
-        <div className="flex items-center">
-          <span className="text-gray-500 whitespace-nowrap">订单号：</span>
-          <input
-            type="text"
-            value={orderId}
-            onChange={(e) => setOrderId(e.target.value)}
-            placeholder="请输入订单号"
-            className="ml-2 px-3 py-1.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-44"
+      <div className="bg-white p-4 rounded-lg shadow">
+        <Form
+          form={searchForm}
+          layout="inline"
+          className="flex flex-wrap gap-4"
+        >
+          <Form.Item name="orderId">
+            <Input
+              placeholder="订单号"
+              prefix={<SearchOutlined />}
+              style={{ width: 200 }}
+            />
+          </Form.Item>
+          
+          <Form.Item name="coachId">
+            <Input
+              placeholder="教练ID"
+              style={{ width: 200 }}
+            />
+          </Form.Item>
+          
+          <Form.Item name="storeName">
+            <Input
+              placeholder="门店名"
+              style={{ width: 200 }}
+            />
+          </Form.Item>
+          
+          <Form.Item name="userId">
+            <Input
+              placeholder="用户ID"
+              style={{ width: 200 }}
+            />
+          </Form.Item>
+          
+          <Form.Item name="city">
+            <Input
+              placeholder="城市"
+              style={{ width: 120 }}
+            />
+          </Form.Item>
+
+          <DateRangeSearch 
+            form={searchForm} 
+            label="下单时间"
+            showTime
+            format="YYYY-MM-DD HH:mm:ss"
           />
-        </div>
-        <div className="flex items-center">
-          <span className="text-gray-500 whitespace-nowrap">教练ID：</span>
-          <input
-            type="text"
-            value={schoolId}
-            onChange={(e) => setSchoolId(e.target.value)}
-            placeholder="请输入教练ID"
-            className="ml-2 px-3 py-1.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-44"
-          />
-        </div>
-        <div className="flex items-center">
-          <span className="text-gray-500 whitespace-nowrap">门店名：</span>
-          <input
-            type="text"
-            value={doorId}
-            onChange={(e) => setDoorId(e.target.value)}
-            placeholder="请输入门店名"
-            className="ml-2 px-3 py-1.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-44"
-          />
-        </div>
-        <div className="flex items-center">
-          <span className="text-gray-500 whitespace-nowrap">用户ID：</span>
-          <input
-            type="text"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            placeholder="请输入用户ID"
-            className="ml-2 px-3 py-1.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-44"
-          />
-        </div>
-        <div className="flex items-center">
-          <span className="text-gray-500 whitespace-nowrap">城市：</span>
-          <input
-            type="text"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder="请输入城市"
-            className="ml-2 px-3 py-1.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="datetime-local"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-            className="px-3 py-1.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <span className="text-gray-500">至</span>
-          <input
-            type="datetime-local"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-            className="px-3 py-1.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="flex gap-2 ml-auto">
-          <button className="px-4 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            查询
-          </button>
-          <button className="px-4 py-1.5 bg-orange-500 text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500">
-            重置
-          </button>
-          <button className="px-4 py-1.5 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
-            导出订单
-          </button>
-        </div>
+
+          <Form.Item className="ml-auto">
+            <Space>
+              <Button type="primary" icon={<SearchOutlined />}>查询</Button>
+              <Button onClick={() => searchForm.resetFields()}>重置</Button>
+              <Button type="primary">导出订单</Button>
+            </Space>
+          </Form.Item>
+        </Form>
       </div>
 
       {/* 筛选区域 */}
