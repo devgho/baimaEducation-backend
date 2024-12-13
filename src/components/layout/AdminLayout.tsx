@@ -96,9 +96,22 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       { label: '黑名单列表', path: '/coaches/blacklist' }
     ],
     商家: [
-      { label: '门店列表', path: '/business/stores' },
-      { label: '门店分类', path: '/business/categories' },
-      { label: '门店评价', path: '/business/reviews' }
+      { label: '商家列表', path: '/business' },
+      { label: '商家分类', path: '/business/categories' },
+      { label: '商家服务', path: '/business/services' },
+      { label: '入驻申请', path: '/business/applications' },
+      { label: '提现审核', path: '/business/reviews' },
+      { label: '提现账户', path: '/business/accounts' },
+      { label: '店员列表', path: '/business/staff' },
+      { label: '教练申请', path: '/business/coach-applications' }
+    ],
+    营销: [
+      { label: '充值套餐', path: '/marketing' },
+      { label: '弹窗管理', path: '/marketing/popups' },
+      { label: '提示音频', path: '/marketing/audio' },
+      { label: '优惠券管理', path: '/marketing/coupons' },
+      { label: '帮助中心', path: '/marketing/help' },
+      { label: '系统公告', path: '/marketing/announcements' }
     ]
   }
 
